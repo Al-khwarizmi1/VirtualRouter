@@ -302,7 +302,7 @@ namespace VirtualRouterClient
                             + Environment.NewLine + "Licensed under the Microsoft Public License (Ms-PL)" + Environment.NewLine
                             + Environment.NewLine + AssemblyAttributes.AssemblyCopyright + Environment.NewLine
                             + Environment.NewLine + "http://virtualrouter.codeplex.com"
-                            
+
                             , "About " + AssemblyAttributes.AssemblyProduct + "...");
         }
 
@@ -435,16 +435,15 @@ namespace VirtualRouterClient
             if (myApp.IsVirtualRouterServiceConnected)
             {
                 cbSharedConnection.DisplayMemberPath = "Name";
-                
+
                 var connections = myApp.VirtualRouter.GetSharableConnections();
 
-                Guid selectedId = Guid.Empty;
                 if (myApp.VirtualRouter.IsStarted())
                 {
                     var sharedConn = myApp.VirtualRouter.GetSharedConnection();
                     if (sharedConn != null)
                     {
-                        selectedId = sharedConn.Guid;
+                        SelectedSharedConnectionId = sharedConn.Guid;
                     }
                 }
                 else
@@ -452,7 +451,7 @@ namespace VirtualRouterClient
                     var previousItem = cbSharedConnection.SelectedItem as SharableConnection;
                     if (previousItem != null)
                     {
-                        selectedId = previousItem.Guid;
+                        SelectedSharedConnectionId = previousItem.Guid;
                     }
                 }
 
@@ -460,7 +459,7 @@ namespace VirtualRouterClient
                 foreach (var c in connections)
                 {
                     cbSharedConnection.Items.Add(c);
-                    if (c.Guid == selectedId)
+                    if (c.Guid == SelectedSharedConnectionId)
                     {
                         cbSharedConnection.SelectedItem = c;
                     }
@@ -476,6 +475,18 @@ namespace VirtualRouterClient
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
 
+        }
+        public Guid SelectedSharedConnectionId
+        {
+            get
+            {
+                return Settings.Default.SelectedSharedConnectionId;
+            }
+            set
+            {
+                Settings.Default.SelectedSharedConnectionId = value;
+                Settings.Default.Save();
+            }
         }
     }
 }
